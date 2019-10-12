@@ -16,9 +16,8 @@ const updateUI = (data) => {
   // destructuring data object. We saved data in cityInfo & weather in local variable. Destructring allows us to take data object then only take prpperty like EnglishName, weatherText, & temprature in a variable. we do it inside {} curley braces it must be the same name as the properties we are getting from object. 
   const { cityInfo, weather } = data;
 
-  // console.log(data) {cityInfo: {…}, weather: {…}}
-
-  // update templates. weatherDetails is a parent element. We are over write currnet  template. 
+  // update templates. weatherDetails is a parent element. 
+  // We are over write currnet  template. 
 
   weatherDetails.innerHTML = `
     <h5 class="my-3">${cityInfo.EnglishName}</h5>
@@ -33,7 +32,7 @@ const updateUI = (data) => {
   icon.setAttribute('src', iconImageScr)
   // update night or day images.
   let dayNightImgSrc = null;  // day or night image source based on 'IsDayTime' true/false
-  dayNightImgSrc = (weather.IsDayTime) ? 'img/day.svg' : 'img/night.svg';``
+  dayNightImgSrc = (weather.IsDayTime) ? 'img/day.svg' : 'img/night.svg'; ``
   // if (weather.IsDayTime) {
   //   dayNightImgSrc = 'img/day.svg';
   // }
@@ -62,7 +61,9 @@ const updateCity = async (city) => {
   // console.log(weather)
   // return only two things in a object
   return { cityInfo, weather };
-}
+}  // end of updateCity() function
+
+
 
 cityForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -74,8 +75,16 @@ cityForm.addEventListener('submit', (e) => {
     .then(data => updateUI(data))
     .catch(err => console.log(err))
 
-  // updateCity(city)
-  // .then(data => updateUI(data))
-  // .catch(err => console.log(err))
+  // Add everytime user search new city into local storage. Always it is going to be latest user city loaction information in local storage. Make default to show what user last time search for. set city info to localStorage
+  localStorage.setItem('lastSearch', city);
+})  // end of submit event listener
 
-})
+
+// check if last searched city location. Take that city to show information. This is first thing happens in this file. 'lastSearch' string of any length is truthy value, if it doesn't exist it is going to return null and null is falsy value. 
+if (localStorage.getItem('lastSearch')) {
+  updateCity(localStorage.getItem('lastSearch'))
+    .then(data => updateUI(data))
+    .catch(err => console.log(err));
+}
+
+
