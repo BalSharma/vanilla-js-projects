@@ -9,15 +9,19 @@ const weatherDetails = document.querySelector('.details');
 const dayOrNight = document.querySelector('img.time');
 const icon = document.querySelector('.icon img');
 
+const forecast = new Forecast();
+// console.log(forecast);
+
+
 const updateUI = (data) => {
   // const cityInfo = data.cityInfo;
   // const weather = data.weather;
 
-  // destructuring data object. We saved data in cityInfo & weather in local variable. Destructring allows us to take data object then only take prpperty like EnglishName, weatherText, & temprature in a variable. we do it inside {} curley braces it must be the same name as the properties we are getting from object. 
+  // destructuring data object. We saved data in cityInfo & weather in local variable. Destructring allows us to take data object then only take prpperty like EnglishName, weatherText, & temprature in a variable. we do it inside {} curley braces it must be the same name as the properties we are getting from object.
   const { cityInfo, weather } = data;
 
-  // update templates. weatherDetails is a parent element. 
-  // We are over write currnet  template. 
+  // update templates. weatherDetails is a parent element.
+  // We are over write currnet  template.
 
   weatherDetails.innerHTML = `
     <h5 class="my-3">${cityInfo.EnglishName}</h5>
@@ -27,7 +31,7 @@ const updateUI = (data) => {
       <span>&deg;C</span>
     </div>
   `
-  // we gave WeatherIcon 1 - 44 
+  // we gave WeatherIcon 1 - 44
   let iconImageScr = `img/icons/${weather.WeatherIcon}.svg`;
   icon.setAttribute('src', iconImageScr)
   // update night or day images.
@@ -51,17 +55,17 @@ const updateUI = (data) => {
 }
 
 
-const updateCity = async (city) => {
-  // getCity is async function so we must wait until it finishes then only assign to cityInfo that is reason why we have await keywork in front of getCity function. We can call below two function because forecast.js comes before app.js in index.html scripts section they are defined before it reaches here even though they are separate files. 
+// const updateCity = async (city) => {
+//   // getCity is async function so we must wait until it finishes then only assign to cityInfo that is reason why we have await keywork in front of getCity function. We can call below two function because forecast.js comes before app.js in index.html scripts section they are defined before it reaches here even though they are separate files.
 
-  const cityInfo = await getCity(city);
-  const weather = await getWeather(cityInfo.Key);
-  // console.log(cityInfo)
-  // console.log(cityInfo.Key)
-  // console.log(weather)
-  // return only two things in a object
-  return { cityInfo, weather };
-}  // end of updateCity() function
+//   const cityInfo = await getCity(city);
+//   const weather = await getWeather(cityInfo.Key);
+//   // console.log(cityInfo)
+//   // console.log(cityInfo.Key)
+//   // console.log(weather)
+//   // return only two things in a object
+//   return { cityInfo, weather };
+// }  // end of updateCity() function
 
 
 
@@ -71,7 +75,8 @@ cityForm.addEventListener('submit', (e) => {
   cityForm.reset();
 
   //update ui
-  updateCity(city)
+  // updateCity(city)
+  forecast.updateCity(city)
     .then(data => updateUI(data))
     .catch(err => console.log(err))
 
@@ -80,9 +85,9 @@ cityForm.addEventListener('submit', (e) => {
 })  // end of submit event listener
 
 
-// check if last searched city location. Take that city to show information. This is first thing happens in this file. 'lastSearch' string of any length is truthy value, if it doesn't exist it is going to return null and null is falsy value. 
+// check if last searched city location. Take that city to show information. This is first thing happens in this file. 'lastSearch' string of any length is truthy value, if it doesn't exist it is going to return null and null is falsy value.
 if (localStorage.getItem('lastSearch')) {
-  updateCity(localStorage.getItem('lastSearch'))
+  forecast.updateCity(localStorage.getItem('lastSearch'))
     .then(data => updateUI(data))
     .catch(err => console.log(err));
 }
